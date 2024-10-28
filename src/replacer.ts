@@ -22,16 +22,15 @@ export const pushDataReplacor = async (data: PushData) => {
       rule.matchApplication === data.process || rule.matchApplication === "*"
   )
   if (!rule) return data
-  const finalIconProps: PushDto["meta"] =
-    typeof rule.override?.iconUrl !== "undefined"
-      ? {
-          iconUrl: rule.override.iconUrl,
-          iconBase64: undefined,
-        }
-      : {
-          iconUrl: data.iconUrl,
-          iconBase64: data.iconBase64,
-        }
+
+  // 确保 iconUrl 和 iconBase64 的优先级处理
+  const finalIconProps: PushDto["meta"] = {
+    // 如果规则中有 override.iconUrl，使用它
+    // 否则保留原有的 iconUrl
+    // 如果都没有，保留 iconBase64
+    iconUrl: rule.override?.iconUrl || data.iconUrl,
+    iconBase64: rule.override?.iconUrl ? undefined : data.iconBase64,
+  }
 
   const finalProcessName =
     rule.replace?.application?.(data.process) || data.process

@@ -40,11 +40,9 @@ export class Pusher {
 
   batch() {
     const data = this.dataList.at(-1)
-
     if (!data) return
 
     const now = Date.now()
-
     const last2 = this.dataList.at(-2)
 
     if (last2)
@@ -62,7 +60,6 @@ export class Pusher {
               iconBase64,
               data.process
             )
-
             delete data.meta?.iconBase64
           }
 
@@ -78,7 +75,7 @@ export class Pusher {
           return res
         } catch (err) {
           if (err.name === "AbortError") {
-            logger.log("AbortError: Fetch request aborted")
+            // 移除调试日志
           } else logger.error(err)
           return err
         }
@@ -99,10 +96,7 @@ export class Pusher {
     this.requestQueue = []
     this.requestQueue.push({ fetcher, cancelToken: cancelToken })
 
-    logger.log(
-      "Pushing process",
-      data.process + " - " + (data.meta?.description || "N/A")
-    )
+    // 移除调试日志
     fetcher()
   }
 }

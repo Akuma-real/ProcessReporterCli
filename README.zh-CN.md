@@ -10,7 +10,7 @@ Process Reporter Cli 是一个 Windows 命令行工具，用于实时报告当�
 
 ### 环境要求
 
-- [Node.js](https://nodejs.org/zh-cn/) (建议使用 v16 或更高版本)
+- [Node.js](https://nodejs.org/zh-cn/) (建议使用 v18 或更高版本)
 - yarn 包管理器
 - Windows 操作系统
 
@@ -76,7 +76,6 @@ cd dist
 运行程序
 node index.js
 ```
-
 
 ## 功能特性
 

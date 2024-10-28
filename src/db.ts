@@ -18,7 +18,8 @@ mkdirSync(path.dirname(dbFile), { recursive: true })
 
 async function migrateUrls(db: sqlite.Database) {
   const { customDomain } = s3
-  logger.log("开始迁移 URL", { customDomain })
+  // 移除这个日志
+  // logger.log("开始迁移 URL", { customDomain })
   
   // 获取所有记录
   const records = await db.all("SELECT * FROM uploads")
@@ -26,11 +27,11 @@ async function migrateUrls(db: sqlite.Database) {
   for (const record of records) {
     const newUrl = `${customDomain}/${record.md5}.png`.replace(/([^:]\/)\/+/g, "$1")
     if (record.url !== newUrl) {
-      logger.log("更新记录 URL", {
-        old: record.url,
-        new: newUrl,
-        name: record.name
-      })
+      // 只在实际需要更新时输出日志
+      const now = new Date()
+      const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`
+      logger.log(`[${timeStr}] 更新图标 URL: ${record.name}`)
+      
       await db.run(
         "UPDATE uploads SET url = ? WHERE md5 = ?",
         [newUrl, record.md5]
@@ -67,3 +68,9 @@ async function getDb() {
 
 getDb()
 export { getDb }
+
+export async function clearDatabase() {
+  const db = await getDb()
+  await db.run('DELETE FROM uploads')
+  logger.log('数据库已清空')
+}

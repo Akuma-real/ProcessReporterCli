@@ -10,7 +10,7 @@ Process Reporter Cli is a windows cli. It is designed to report in real time the
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/en/) (v16 or higher recommended)
+- [Node.js](https://nodejs.org/en/) (v18 or higher recommended)
 - yarn package manager
 - Windows operating system
 

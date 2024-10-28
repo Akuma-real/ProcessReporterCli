@@ -7,12 +7,26 @@ const resolvePath = (path: string) => require("path").resolve(cwd, path)
 const env = config({
   path: resolvePath(".env"),
 })
+
+const requiredEnvVars = [
+  'API_URL',
+  'UPDATE_KEY',
+  'S3_ACCOUNT_ID',
+  'S3_ACCESS_KEY',
+  'S3_SECRET_KEY',
+  'S3_BUCKET',
+  'S3_CUSTOM_DOMAIN'
+] as const
+
+for (const envVar of requiredEnvVars) {
+  if (!env.parsed?.[envVar]) {
+    throw new Error(`环境变量 ${envVar} 未设置`)
+  }
+}
+
 export const endpoint = env.parsed?.API_URL!
 export const updateKey = env.parsed?.UPDATE_KEY!
 
-if (!endpoint || !updateKey) {
-  throw new Error("API_URL or UPDATE_KEY is not set")
-}
 export const rules: Rule[] = [
   {
     matchApplication: "Visual Studio Code",
@@ -79,12 +93,12 @@ export const ignoreProcessNames: (
 )[] = ["下载"]
 
 export const s3 = {
-  accountId: "de7ecb0eaa0a328071255d557a6adb66",
-  accessKeyId: process.env.S3_ACCESS_KEY as string,
-  secretAccessKey: process.env.S3_SECRET_KEY as string,
-  bucket: "process-reporter",
-  customDomain: "https://process-reporter-cdn.innei.in",
-  region: "auto",
+  accountId: env.parsed?.S3_ACCOUNT_ID!,
+  accessKeyId: env.parsed?.S3_ACCESS_KEY!,
+  secretAccessKey: env.parsed?.S3_SECRET_KEY!,
+  bucket: env.parsed?.S3_BUCKET!,
+  customDomain: env.parsed?.S3_CUSTOM_DOMAIN!,
+  region: env.parsed?.S3_REGION || "auto",
   get endpoint() {
     return `https://${s3.accountId}.r2.cloudflarestorage.com`
   },
